@@ -72,7 +72,7 @@ public class LoginActivity
                                             Log.i("login", "Ho gya " + "be");
                                             Intent intent = new Intent(
                                                     LoginActivity.this,
-                                                    AddVendorActivity.class);
+                                                    ChooseBusinessActivity.class);
                                             LoginActivity.this
                                                     .startActivity(intent);
                                         }
@@ -92,7 +92,7 @@ public class LoginActivity
             @Override
             public void onClick(View v) {
                 Intent signUpIntent = new Intent(LoginActivity.this,
-                        SignUpActivity.class);
+                        PhoneAuthActivity.class);
                 startActivity(signUpIntent);
             }
         });

@@ -5,17 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class AddVendorActivity extends AppCompatActivity {
+public class RegisterVendorActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_vendor);
+        setContentView(R.layout.activity_register_vendor);
     }
 
     public void setVendorLocationOnMap(View view) {
-        Intent intent = new Intent(AddVendorActivity.this,
-                SetVendorLocation.class);
+        Intent intent = new Intent(RegisterVendorActivity.this,
+                SetVendorLocationOnMap.class);
         startActivity(intent);
     }
 }

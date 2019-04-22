@@ -1,6 +1,7 @@
 package com.example.fascinationsbusiness;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
@@ -12,7 +13,6 @@ import android.view.View;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,17 +22,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class SetVendorLocation extends FragmentActivity
+public class SetLocationOfInventory extends FragmentActivity
         implements OnMapReadyCallback {
 
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 100;
     private GoogleMap googleMap;
     private FusedLocationProviderClient fusedLocationClient;
+    private LatLng markedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_vendor_location);
+        setContentView(R.layout.activity_set_location_of_inventory);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -68,7 +69,7 @@ public class SetVendorLocation extends FragmentActivity
             setCurrentLocationOnMap();
         } else {
             ActivityCompat
-                    .requestPermissions(SetVendorLocation.this,
+                    .requestPermissions(SetLocationOfInventory.this,
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                             MY_PERMISSIONS_REQUEST_FINE_LOCATION);
         }
@@ -105,6 +106,8 @@ public class SetVendorLocation extends FragmentActivity
 
                 Log.i("lodu", "mark ho gya.");
                 Log.i("lodu", latLng.toString());
+
+                markedLocation = latLng;
             }
         });
 
@@ -187,7 +190,10 @@ public class SetVendorLocation extends FragmentActivity
                         });
     }
 
-    public void setFinalLocationOfVendor(View view) {
-        Log.i("sett", "Location is set.");
+    public void setFinalLocationOfInventory(View view) {
+        Intent intent = new Intent(SetLocationOfInventory.this,
+                SignUpActivity.class);
+        intent.putExtra("inventory-location", markedLocation);
+        startActivity(intent);
     }
 }

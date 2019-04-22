@@ -30,9 +30,15 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".SetVendorLocation"
-            android:label="@string/title_activity_set_vendor_location"></activity>
-        <activity android:name=".AddVendorActivity" />
+            android:name=".SetLocationOfInventory"
+            android:label="@string/title_activity_set_location_of_inventory"></activity>
+        <activity android:name=".PhoneAuthActivity" />
+        <activity android:name=".RegisterInventoryActivity" />
+        <activity android:name=".ChooseBusinessActivity" />
+        <activity
+            android:name=".SetVendorLocationOnMap"
+            android:label="@string/title_activity_set_vendor_location" />
+        <activity android:name=".RegisterVendorActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

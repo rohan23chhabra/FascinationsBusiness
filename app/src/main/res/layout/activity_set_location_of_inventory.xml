@@ -6,11 +6,11 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SetVendorLocationOnMap">
+    tools:context=".SetLocationOfInventory" >
 
-    <Button android:id="@+id/set_final_location"
+    <Button android:id="@+id/set_inventory_location"
         android:text="Set location"
-        android:onClick="setFinalLocationOfVendor"
+        android:onClick="setFinalLocationOfInventory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

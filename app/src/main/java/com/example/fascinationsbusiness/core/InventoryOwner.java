@@ -2,7 +2,7 @@ package com.example.fascinationsbusiness.core;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class InventoryOwner extends Owner {
     private int capacity;
@@ -19,13 +19,13 @@ public class InventoryOwner extends Owner {
                           String panNumber,
                           String imageURL, String accountNumber,
                           LatLng location,
-                          LocalDateTime openingTime, LocalDateTime closingTime,
+                          LocalTime openingTime, LocalTime closingTime,
                           boolean isOpen,
-                          int capacity) {
+                          int capacity, String address) {
         super(name, email, password, ifscCode, phoneNumber,
                 panNumber,
                 imageURL, accountNumber, location, openingTime, closingTime,
-                isOpen);
+                isOpen, address);
         this.capacity = capacity;
     }
 

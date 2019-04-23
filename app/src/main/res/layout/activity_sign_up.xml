@@ -14,9 +14,9 @@
         android:paddingRight="24dp">
 
         <ImageView
+            android:id="@+id/targetimage"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
-            android:id="@+id/targetimage"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="12dp"
             android:src="@drawable/logo" />
@@ -45,7 +45,7 @@
             android:layout_marginBottom="8dp">
 
             <EditText
-                android:id="@+id/input_email"
+                android:id="@+id/input_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
@@ -67,6 +67,21 @@
                 android:autofillHints=""
                 android:hint="Password"
                 android:inputType="textPassword" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <EditText
+                android:id="@+id/input_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="Address"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -129,34 +144,26 @@
                 android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_location"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:onClick="setLocationOfInventory"
+            android:padding="12dp"
+            android:text="Set Location" />
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_location"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:padding="12dp"
-                android:onClick="setLocationOfInventory"
-                android:text="Set Location" />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_upload_photo"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="110dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:padding="12dp"
-                android:text="Upload photo" />
-        </LinearLayout>
-
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_upload_photo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:padding="12dp"
+            android:text="Upload photo" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_next"
@@ -165,7 +172,6 @@
             android:layout_marginTop="1dp"
             android:padding="12dp"
             android:text="Sign Up" />
-
 
     </LinearLayout>
 </ScrollView>

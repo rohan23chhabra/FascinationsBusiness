@@ -3,7 +3,7 @@ package com.example.fascinationsbusiness.core;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Owner implements Serializable {
     private String name;
@@ -15,9 +15,16 @@ public class Owner implements Serializable {
     private String imageURL;
     private String accountNumber;
     private LatLng location;
-    private LocalDateTime openingTime;
-    private LocalDateTime closingTime;
+    private LocalTime openingTime;
+    private LocalTime closingTime;
     private boolean isOpen;
+    private boolean isVerified = false;
+    private String address;
+
+
+
+
+
 
     public Owner() {
     }
@@ -25,8 +32,8 @@ public class Owner implements Serializable {
     public Owner(String name, String email, String password,
                  String ifscCode, String phoneNumber,
                  String panNumber, String imageURL, String accountNumber,
-                 LatLng location, LocalDateTime openingTime, LocalDateTime closingTime,
-                 boolean isOpen) {
+                 LatLng location, LocalTime openingTime, LocalTime closingTime,
+                 boolean isOpen,String address) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -39,6 +46,7 @@ public class Owner implements Serializable {
         this.openingTime = openingTime;
         this.closingTime = closingTime;
         this.isOpen = isOpen;
+        this.address = address;
     }
 
     public String getName() {
@@ -113,19 +121,19 @@ public class Owner implements Serializable {
         this.location = location;
     }
 
-    public LocalDateTime getOpeningTime() {
+    public LocalTime getOpeningTime() {
         return openingTime;
     }
 
-    public void setOpeningTime(LocalDateTime openingTime) {
+    public void setOpeningTime(LocalTime openingTime) {
         this.openingTime = openingTime;
     }
 
-    public LocalDateTime getClosingTime() {
+    public LocalTime getClosingTime() {
         return closingTime;
     }
 
-    public void setClosingTime(LocalDateTime closingTime) {
+    public void setClosingTime(LocalTime closingTime) {
         this.closingTime = closingTime;
     }
 
@@ -135,5 +143,21 @@ public class Owner implements Serializable {
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

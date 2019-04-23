@@ -28,10 +28,10 @@
             android:layout_marginBottom="8dp">
 
             <EditText
-                android:id="@+id/input_email"
+                android:id="@+id/input_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
+                android:hint="Phone"
                 android:inputType="textEmailAddress"
                 android:autofillHints="" />
         </android.support.design.widget.TextInputLayout>
@@ -52,6 +52,28 @@
                 android:autofillHints="" />
         </android.support.design.widget.TextInputLayout>
 
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioButton android:id="@+id/radio_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/radio_inventory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inventory owner"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/radio_food_vendor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Food vendor owner"
+                android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+
+
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
@@ -59,6 +81,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
+            android:onClick="loginButtonOnClick"
             android:text="Login" />
 
         <TextView
@@ -67,6 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:gravity="center"
+            android:onClick="signUpOnClick"
             android:text="No account yet? Create one"
             android:textSize="16dip" />
 

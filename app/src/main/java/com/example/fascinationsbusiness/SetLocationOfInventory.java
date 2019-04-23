@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.example.fascinationsbusiness.core.InventoryOwner;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +30,7 @@ public class SetLocationOfInventory extends FragmentActivity
     private GoogleMap googleMap;
     private FusedLocationProviderClient fusedLocationClient;
     private LatLng markedLocation;
+    private InventoryOwner owner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,8 +194,12 @@ public class SetLocationOfInventory extends FragmentActivity
 
     public void setFinalLocationOfInventory(View view) {
         Intent intent = new Intent(SetLocationOfInventory.this,
-                SignUpActivity.class);
+                SignUpInventoryActivity.class);
         intent.putExtra("inventory-location", markedLocation);
+        Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+        owner = (InventoryOwner) bundle.getSerializable("inventory-owner");
+        intent.putExtra("inventory-owner", owner);
         startActivity(intent);
     }
 }

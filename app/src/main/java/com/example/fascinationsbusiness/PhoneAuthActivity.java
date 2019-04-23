@@ -116,7 +116,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
                 // [END_EXCLUDE]
                 signInWithPhoneAuthCredential(credential);
                 Intent intent = new Intent(PhoneAuthActivity.this,
-                        SignUpActivity.class);
+                        SignUpInventoryActivity.class);
                 intent.putExtra("phone",
                         mPhoneNumberField.getText().toString());
                 PhoneAuthActivity.this.startActivity(intent);

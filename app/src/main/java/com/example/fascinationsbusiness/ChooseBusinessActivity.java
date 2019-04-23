@@ -15,13 +15,13 @@ public class ChooseBusinessActivity extends AppCompatActivity {
 
     public void registerInventory(View view) {
         Intent intent = new Intent(ChooseBusinessActivity.this,
-                RegisterInventoryActivity.class);
+                PhoneAuthActivity.class);
         startActivity(intent);
     }
 
     public void registerFoodVendor(View view) {
         Intent intent = new Intent(ChooseBusinessActivity.this,
-                RegisterVendorActivity.class);
+                SignUpVendorActivity.class);
         startActivity(intent);
     }
 }

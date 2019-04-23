@@ -1,6 +1,7 @@
 package com.example.fascinationsbusiness;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fascinationsbusiness.core.InventoryOwner;
+import com.example.fascinationsbusiness.util.SessionDetails;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -100,17 +103,24 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void verifyButtonOnClick(View view) {
-        owner.setVerified(true);
+        owner.setVerified("true");
         databaseReference.child("inventory-owner")
                 .child(owner.getPhoneNumber())
                 .setValue(owner);
+        Toast.makeText(this, "Inventory owner verified", Toast.LENGTH_SHORT).show();
     }
 
     public void discardButtonOnClick(View view) {
         databaseReference.child("inventory-owner")
                 .child(owner.getPhoneNumber())
                 .removeValue();
-        Intent intent = new Intent(AdminActivity.this, AdminActivity.class);
+        Toast.makeText(this, "Inventory owner discarded", Toast.LENGTH_SHORT).show();
+    }
+
+    public void logoutButtonOnClick(View view) {
+        new SessionDetails(this).getEditor().clear();
+        new SessionDetails(this).getEditor().apply();
+        Intent intent = new Intent(AdminActivity.this, LoginActivity.class);
         startActivity(intent);
     }
 }

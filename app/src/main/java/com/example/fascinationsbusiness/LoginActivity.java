@@ -12,11 +12,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.example.fascinationsbusiness.core.InventoryOwner;
+import com.example.fascinationsbusiness.serialize.MyGson;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 public class LoginActivity
         extends AppCompatActivity {
@@ -64,11 +67,16 @@ public class LoginActivity
         final String password = passwordText.getText().toString();
         if (phonenumber.equals("Admin") && password
                 .equals("Admin") && selectedOwner.equals("Admin")) {
+            editor.putString("phone",
+                    "Admin");
+            editor.putString("password", "Admin");
+            editor.apply();
             Intent intent = new Intent(
                     LoginActivity.this,
                     AdminActivity.class);
             LoginActivity.this
                     .startActivity(intent);
+            return;
         }
         FirebaseDatabase.getInstance()
                 .getReference()
@@ -79,8 +87,13 @@ public class LoginActivity
                             @Override
                             public void onDataChange(
                                     @NonNull DataSnapshot dataSnapshot) {
-                                String pass = dataSnapshot
-                                        .getValue(String.class);
+                                Gson gson = MyGson.getGson();
+                                InventoryOwner owner = gson.fromJson(gson
+                                                .toJson(dataSnapshot
+                                                        .getValue()),
+                                        InventoryOwner.class);
+                                assert owner != null;
+                                String pass = owner.getPassword();
                                 if (passwordText.getText().toString()
                                         .equals(pass)) {
                                     Log.i("login", "Successful login.");
@@ -93,7 +106,8 @@ public class LoginActivity
                                             "inventory-owner")) {
                                         Intent intent = new Intent(
                                                 LoginActivity.this,
-                                                ChooseBusinessActivity.class);
+                                                InventoryOwnerHomePageActivity.class);
+                                        intent.putExtra("phone", phonenumber);
                                         LoginActivity.this
                                                 .startActivity(intent);
                                     }

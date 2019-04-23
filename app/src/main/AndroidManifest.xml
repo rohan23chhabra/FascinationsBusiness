@@ -17,7 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InventoryOwnerHomePageActivity"></activity>
+        <activity android:name=".TemporaryShutDownActivity"></activity>
+        <activity android:name=".SetOpeningTime" />
+        <activity android:name=".SetClosingTime" />
+        <activity
+            android:name=".InventoryOwnerHomePageActivity"
+            android:label="@string/title_activity_inventory_owner_home_page"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AdminActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

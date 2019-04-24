@@ -5,27 +5,36 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fascinationsbusiness.core.InventoryOwner;
+import com.example.fascinationsbusiness.core.InventoryRequest;
+import com.example.fascinationsbusiness.core.User;
+import com.example.fascinationsbusiness.db.DB;
 import com.example.fascinationsbusiness.serialize.MyGson;
+import com.example.fascinationsbusiness.util.SessionDetails;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class InventoryOwnerHomePageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +43,9 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
     String phoneNumber;
     private DatabaseReference databaseReference;
     TextView verifyStatusView;
+    ListView listView;
+    List<User> userList = new ArrayList<>();
+    List<String> userPhoneList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +77,68 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         verifyStatusView = findViewById(R.id.verification_status);
+        listView = findViewById(R.id.listview);
+
+        DB.getDatabaseReference().child("pending-inventory-requests").addValueEventListener(
+                new ValueEventListener() {
+                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        Iterator<DataSnapshot> dataSnapshotIterator =
+                                dataSnapshot.getChildren().iterator();
+                        while (dataSnapshotIterator.hasNext()) {
+                            DataSnapshot dataSnapshotChild = dataSnapshotIterator.next();
+                            Gson gson = MyGson.getGson();
+                            InventoryRequest request =
+                                    gson.fromJson(gson.toJson(dataSnapshotChild.getValue()),
+                                            InventoryRequest.class);
+                            String user = gson.fromJson(gson.toJson(dataSnapshotChild.getKey()),
+                                    String.class);
+                            String loggedInPhoneNumber =
+                                    new SessionDetails(getApplicationContext())
+                                            .getSharedPreferences().getString("phone",
+                                            "56");
+                            if (loggedInPhoneNumber.equals(request.getOwnerPhoneNumber())) {
+                                userPhoneList.add(user);
+                            }
+                        }
+                        for (String userPhone : userPhoneList) {
+                            DB.getDatabaseReference().child("users").child(userPhone)
+                                    .addValueEventListener(
+                                            new ValueEventListener() {
+                                                @Override public void onDataChange(
+                                                        @NonNull DataSnapshot dataSnapshot) {
+                                                    Gson gson = MyGson.getGson();
+                                                    User user = gson.fromJson(
+                                                            gson.toJson(dataSnapshot.getValue()),
+                                                            User.class);
+                                                    userList.add(user);
+                                                }
+
+                                                @Override public void onCancelled(
+                                                        @NonNull DatabaseError databaseError) {
+                                                }
+                                            });
+                        }
+                        CustomAdapter customAdapter =
+                                new CustomAdapter(InventoryOwnerHomePageActivity.this, userList);
+                        listView.setAdapter(customAdapter);
+                    }
+
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) {
+
+
+                    }
+                });
+
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         Bundle bundle = getIntent().getExtras();
-        assert bundle != null;
-        phoneNumber = bundle.getString("phone");
+        if (bundle == null) {
+            phoneNumber = new SessionDetails(this).getSharedPreferences().getString("phone", "89");
+        } else {
+            phoneNumber = bundle.getString("phone");
+        }
         databaseReference.child("inventory-owner").child(phoneNumber)
                 .addValueEventListener(
                         new ValueEventListener() {
@@ -145,17 +214,22 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_opening_time) {
-            Intent intent = new Intent(InventoryOwnerHomePageActivity.this,SetOpeningTime.class);
-            intent.putExtra("phonenumber",phoneNumber);
+            Intent intent = new Intent(InventoryOwnerHomePageActivity.this, SetOpeningTime.class);
+            intent.putExtra("phonenumber", phoneNumber);
             startActivity(intent);
         } else if (id == R.id.nav_closing_time) {
-            Intent intent = new Intent(InventoryOwnerHomePageActivity.this,SetClosingTime.class);
-            intent.putExtra("phonenumber",phoneNumber);
+            Intent intent = new Intent(InventoryOwnerHomePageActivity.this, SetClosingTime.class);
+            intent.putExtra("phonenumber", phoneNumber);
             startActivity(intent);
 
         } else if (id == R.id.nav_close_business) {
-            Intent intent = new Intent(InventoryOwnerHomePageActivity.this,TemporaryShutDownActivity.class);
-            intent.putExtra("phonenumber",phoneNumber);
+            Intent intent = new Intent(InventoryOwnerHomePageActivity.this,
+                    TemporaryShutDownActivity.class);
+            intent.putExtra("phonenumber", phoneNumber);
+            startActivity(intent);
+        } else if (id == R.id.nav_set_price) {
+            Intent intent = new Intent(InventoryOwnerHomePageActivity.this, SetPriceActivity.class);
+            intent.putExtra("phone", phoneNumber);
             startActivity(intent);
         }
 

@@ -58,7 +58,7 @@ public class SignUpInventoryActivity
     FirebaseStorage storage;
     StorageReference storageReference;
 
-    private final int PICK_IMAGE_REQUEST = 71;
+    private static final int PICK_IMAGE_REQUEST = 71;
     private DatabaseReference databaseReference;
     private SharedPreferences sharedPreferences;
     private String phoneNumber;
@@ -249,7 +249,7 @@ public class SignUpInventoryActivity
                 pan, null,
                 accountNumber, markedLocation,
                 null, null,
-                "true", capacity, address);
+                "true", capacity, address, 5);
 
 
         String openingTime = "10:0:0";

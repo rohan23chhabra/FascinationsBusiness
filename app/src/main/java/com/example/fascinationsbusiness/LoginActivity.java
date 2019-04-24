@@ -101,6 +101,8 @@ public class LoginActivity
                                             phonenumber);
                                     editor.putString("password", pass);
                                     editor.apply();
+                                    startService(new Intent(LoginActivity.this,
+                                            NotificationService.class));
                                     Log.i("login", "Ho gya " + "be");
                                     if (selectedOwner.equals(
                                             "inventory-owner")) {

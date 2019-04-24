@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.fascinationsbusiness.core.InventoryOwner;
 import com.example.fascinationsbusiness.serialize.MyGson;
+import com.example.fascinationsbusiness.service.NotificationService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

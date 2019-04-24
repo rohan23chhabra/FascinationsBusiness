@@ -1,4 +1,4 @@
-package com.example.fascinationsbusiness;
+package com.example.fascinationsbusiness.service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
+import com.example.fascinationsbusiness.InventoryOwnerHomePageActivity;
+import com.example.fascinationsbusiness.R;
 import com.example.fascinationsbusiness.core.InventoryRequest;
 import com.example.fascinationsbusiness.db.DB;
 import com.example.fascinationsbusiness.serialize.MyGson;
@@ -19,12 +22,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
 public class NotificationService extends Service {
-
-    HashMap<String, String> ownerList = new HashMap<>();
 
     @Override public void onCreate() {
         super.onCreate();
@@ -41,6 +41,7 @@ public class NotificationService extends Service {
                         while (dataSnapshotIterator.hasNext()) {
                             DataSnapshot dataSnapshotChild = dataSnapshotIterator.next();
                             Gson gson = MyGson.getGson();
+                            Log.i("mera-json", gson.toJson(dataSnapshotChild.getValue()));
                             InventoryRequest request =
                                     gson.fromJson(gson.toJson(dataSnapshotChild.getValue()),
                                             InventoryRequest.class);

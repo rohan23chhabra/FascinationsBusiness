@@ -3,6 +3,7 @@ package com.example.fascinationsbusiness;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,7 @@ import com.example.fascinationsbusiness.core.InventoryRequest;
 import com.example.fascinationsbusiness.core.User;
 import com.example.fascinationsbusiness.db.DB;
 import com.example.fascinationsbusiness.serialize.MyGson;
+import com.example.fascinationsbusiness.service.ListViewItemDeleteService;
 import com.example.fascinationsbusiness.util.SessionDetails;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,6 +48,7 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
     ListView listView;
     List<User> userList = new ArrayList<>();
     List<String> userPhoneList = new ArrayList<>();
+    List<Integer> userBagsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,25 +86,74 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
                 new ValueEventListener() {
                     @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+
                         Iterator<DataSnapshot> dataSnapshotIterator =
                                 dataSnapshot.getChildren().iterator();
+                        userPhoneList.clear();
+                        userBagsList.clear();
                         while (dataSnapshotIterator.hasNext()) {
                             DataSnapshot dataSnapshotChild = dataSnapshotIterator.next();
-                            Gson gson = MyGson.getGson();
-                            InventoryRequest request =
+                            final Gson gson = MyGson.getGson();
+                            final InventoryRequest request =
                                     gson.fromJson(gson.toJson(dataSnapshotChild.getValue()),
                                             InventoryRequest.class);
-                            String user = gson.fromJson(gson.toJson(dataSnapshotChild.getKey()),
-                                    String.class);
+
+                            final String user = gson
+                                    .fromJson(gson.toJson(dataSnapshotChild.getKey()),
+                                            String.class);
                             String loggedInPhoneNumber =
                                     new SessionDetails(getApplicationContext())
                                             .getSharedPreferences().getString("phone",
                                             "56");
                             if (loggedInPhoneNumber.equals(request.getOwnerPhoneNumber())) {
+                                final int[] prevCapacity = {0};
+                                DB.getDatabaseReference().child("inventory-owner")
+                                        .child(request.getOwnerPhoneNumber())
+                                        .child("capacity").addValueEventListener(
+                                        new ValueEventListener() {
+                                            @Override public void onDataChange(
+                                                    @NonNull DataSnapshot dataSnapshot) {
+                                                prevCapacity[0] =
+                                                        gson.fromJson(gson.toJson(
+                                                                dataSnapshot.getValue()),
+                                                                int.class);
+                                                Log.i("mc-bc-aids",
+                                                        String.valueOf(prevCapacity[0]));
+                                            }
+
+                                            @Override public void onCancelled(
+                                                    @NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
                                 userPhoneList.add(user);
+                                userBagsList.add(request.getNumberOfBags());
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //Do something after 100ms
+                                        final Intent intent = new Intent(
+                                                InventoryOwnerHomePageActivity.this,
+                                                ListViewItemDeleteService.class);
+                                        intent.putExtra("user-phone-number", user);
+                                        intent.putExtra("add-capacity", request.getNumberOfBags());
+                                        intent.putExtra("current-time-millis",
+                                                request.getCurrentTimeMillis());
+                                        intent.putExtra("owner-phone-number",
+                                                request.getOwnerPhoneNumber());
+                                        intent.putExtra("prev-capacity", prevCapacity[0]);
+                                        startService(intent);
+                                    }
+                                }, 2000);
                             }
                         }
-                        for (String userPhone : userPhoneList) {
+                        //final Semaphore userListSemaphore = new Semaphore(0);
+                        for (int i = 0;
+                                i < userBagsList.size();
+                                i++) {
+                            String userPhone = userPhoneList.get(i);
+                            final int userBag = userBagsList.get(i);
                             DB.getDatabaseReference().child("users").child(userPhone)
                                     .addValueEventListener(
                                             new ValueEventListener() {
@@ -111,6 +163,7 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
                                                     User user = gson.fromJson(
                                                             gson.toJson(dataSnapshot.getValue()),
                                                             User.class);
+                                                    user.setNumberOfBags(userBag);
                                                     userList.add(user);
                                                 }
 
@@ -118,10 +171,25 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
                                                         @NonNull DatabaseError databaseError) {
                                                 }
                                             });
+                            //userListSemaphore.release();
                         }
-                        CustomAdapter customAdapter =
-                                new CustomAdapter(InventoryOwnerHomePageActivity.this, userList);
-                        listView.setAdapter(customAdapter);
+//                        try {
+//                            userListSemaphore.acquire();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //Do something after 100ms
+                                CustomAdapter customAdapter =
+                                        new CustomAdapter(InventoryOwnerHomePageActivity.this,
+                                                userList);
+                                listView.setAdapter(customAdapter);
+                            }
+                        }, 1000);
+
                     }
 
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) {

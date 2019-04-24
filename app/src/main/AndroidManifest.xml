@@ -19,9 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".NotificationService"
+            android:name=".service.ListViewItemDeleteService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".service.NotificationService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name=".SetPriceActivity" />
         <activity android:name=".TemporaryShutDownActivity" />

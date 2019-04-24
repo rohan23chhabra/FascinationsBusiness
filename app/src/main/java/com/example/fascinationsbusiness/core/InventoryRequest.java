@@ -6,14 +6,19 @@ public class InventoryRequest {
     int hours;
     int minutes;
     int seconds;
+    long currentTimeMillis;
+    int numberOfBags;
 
     public InventoryRequest(String userPhoneNumber, String ownerPhoneNumber, int hours, int minutes,
-                            int seconds) {
+                            int seconds, long currentTimeMillis,
+                            int numberOfBags) {
         this.userPhoneNumber = userPhoneNumber;
         this.ownerPhoneNumber = ownerPhoneNumber;
         this.hours = hours;
         this.minutes = minutes;
         this.seconds = seconds;
+        this.numberOfBags = numberOfBags;
+        this.currentTimeMillis = currentTimeMillis;
     }
 
     public String getUserPhoneNumber() {
@@ -54,5 +59,24 @@ public class InventoryRequest {
 
     public void setSeconds(int seconds) {
         this.seconds = seconds;
+    }
+
+    public int getNumberOfBags() {
+        return numberOfBags;
+    }
+
+    public void setNumberOfBags(int numberOfBags) {
+        this.numberOfBags = numberOfBags;
+    }
+
+    public long getCurrentTimeMillis() {
+        return currentTimeMillis;
+    }
+
+    public void setCurrentTimeMillis(long currentTimeMillis) {
+        this.currentTimeMillis = currentTimeMillis;
+    }
+
+    public InventoryRequest() {
     }
 }

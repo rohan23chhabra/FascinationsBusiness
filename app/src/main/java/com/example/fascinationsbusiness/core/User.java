@@ -1,18 +1,24 @@
 package com.example.fascinationsbusiness.core;
 
+import java.util.Date;
+
 public class User {
     String phoneNumber;
     String password;
     String email;
     String name;
     String imageURL;
+    int numberOfBags;
 
-    public User(String phoneNumber, String password, String name, String email, String imageURL) {
+
+    public User(String phoneNumber, String password, String name, String email, String imageURL,
+                int numberOfBags) {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.name = name;
         this.email = email;
         this.imageURL = imageURL;
+        this.numberOfBags = numberOfBags;
     }
 
     public String getPhoneNumber() {
@@ -57,4 +63,13 @@ public class User {
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
+
+    public int getNumberOfBags() {
+        return numberOfBags;
+    }
+
+    public void setNumberOfBags(int numberOfBags) {
+        this.numberOfBags = numberOfBags;
+    }
+
 }

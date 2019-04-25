@@ -110,6 +110,8 @@ public class SetLocationOfVendor extends FragmentActivity
 
                 Log.i("lodu", "mark ho gya.");
                 Log.i("lodu", latLng.toString());
+
+                markedLocation = latLng;
             }
         });
 

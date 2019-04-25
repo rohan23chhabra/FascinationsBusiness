@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 public class SessionDetails {
 
     private Context context;
-    public SharedPreferences sharedPreferences;
-    public SharedPreferences.Editor editor;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     public SessionDetails(Context context) {
         this.context = context;

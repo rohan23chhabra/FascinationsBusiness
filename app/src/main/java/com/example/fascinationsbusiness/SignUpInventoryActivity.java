@@ -33,7 +33,6 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Time;
 
 public class SignUpInventoryActivity
         extends AppCompatActivity {
@@ -169,7 +168,7 @@ public class SignUpInventoryActivity
                                             editor.apply();
                                             Intent intent = new Intent(
                                                     SignUpInventoryActivity.this,
-                                                    ChooseBusinessActivity.class);
+                                                    InventoryOwnerHomePageActivity.class);
                                             SignUpInventoryActivity.this
                                                     .startActivity(intent);
                                         } else {
@@ -200,8 +199,7 @@ public class SignUpInventoryActivity
         ifscText.setText(owner.getIfscCode());
         addressText.setText(owner.getAddress());
 
-        this.markedLocation = extras.getParcelable("inventory" +
-                "-location");
+        this.markedLocation = extras.getParcelable("inventory-location");
         owner.setLocation(markedLocation);
     }
 

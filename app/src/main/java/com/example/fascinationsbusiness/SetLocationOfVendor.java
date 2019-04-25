@@ -1,15 +1,17 @@
 package com.example.fascinationsbusiness;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.example.fascinationsbusiness.core.VendorOwner;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,20 +23,23 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class SetVendorLocationOnMap extends FragmentActivity
+public class SetLocationOfVendor extends FragmentActivity
         implements OnMapReadyCallback {
 
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 100;
     private GoogleMap googleMap;
     private FusedLocationProviderClient fusedLocationClient;
+    private LatLng markedLocation;
+    private VendorOwner vendorOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_vendor_location);
+        setContentView(R.layout.activity_set_location_of_vendor);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(this);
@@ -67,8 +72,9 @@ public class SetVendorLocationOnMap extends FragmentActivity
             setCurrentLocationOnMap();
         } else {
             ActivityCompat
-                    .requestPermissions(SetVendorLocationOnMap.this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    .requestPermissions(SetLocationOfVendor.this,
+                            new String[]{
+                                    Manifest.permission.ACCESS_FINE_LOCATION},
                             MY_PERMISSIONS_REQUEST_FINE_LOCATION);
         }
 
@@ -188,5 +194,15 @@ public class SetVendorLocationOnMap extends FragmentActivity
 
     public void setFinalLocationOfVendor(View view) {
         Log.i("sett", "Location is set.");
+        Intent intent = new Intent(SetLocationOfVendor.this,
+                SignUpVendorActivity.class);
+        intent.putExtra("vendor-location", markedLocation);
+        Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+        vendorOwner = (VendorOwner) bundle.getSerializable("vendor-owner");
+        //Bitmap qrCode = bundle.getParcelable("qr-code");
+        intent.putExtra("vendor-owner", vendorOwner);
+        //intent.putExtra("qr-code", qrCode);
+        startActivity(intent);
     }
 }

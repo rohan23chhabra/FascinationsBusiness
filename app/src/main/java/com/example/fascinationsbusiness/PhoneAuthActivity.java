@@ -58,6 +58,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     private Button mVerifyButton;
     private Button mResendButton;
     private Button mSignOutButton;
+    private String ownerType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,9 @@ public class PhoneAuthActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
+
+        Bundle bundle = getIntent().getExtras();
+        ownerType = bundle.getString("owner-type");
 
         // Assign views
         mPhoneNumberViews = findViewById(R.id.phoneAuthFields);
@@ -115,11 +119,20 @@ public class PhoneAuthActivity extends AppCompatActivity implements
                 updateUI(STATE_VERIFY_SUCCESS, credential);
                 // [END_EXCLUDE]
                 signInWithPhoneAuthCredential(credential);
-                Intent intent = new Intent(PhoneAuthActivity.this,
-                        SignUpInventoryActivity.class);
-                intent.putExtra("phone",
-                        mPhoneNumberField.getText().toString());
-                PhoneAuthActivity.this.startActivity(intent);
+
+                if (ownerType.equalsIgnoreCase("inventory")) {
+                    Intent intent = new Intent(PhoneAuthActivity.this,
+                            SignUpInventoryActivity.class);
+                    intent.putExtra("phone",
+                            mPhoneNumberField.getText().toString());
+                    PhoneAuthActivity.this.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(PhoneAuthActivity.this,
+                            SignUpVendorActivity.class);
+                    intent.putExtra("phone",
+                            mPhoneNumberField.getText().toString());
+                    PhoneAuthActivity.this.startActivity(intent);
+                }
             }
 
             @Override

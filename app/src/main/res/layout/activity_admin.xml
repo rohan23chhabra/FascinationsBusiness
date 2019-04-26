@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0ab344"
+    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".AdminActivity">
 
@@ -24,8 +24,10 @@
                 android:id="@+id/input_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/mehro"
                 android:autofillHints=""
                 android:hint="Phone Number"
+                android:textColorHint="@color/colorAccent"
                 android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 

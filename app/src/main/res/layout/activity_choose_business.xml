@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="110"
+    android:background="@android:color/white"
     tools:context=".ChooseBusinessActivity">
 
     <View

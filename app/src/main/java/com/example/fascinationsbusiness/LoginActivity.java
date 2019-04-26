@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class LoginActivity
     Button loginButton;
     TextView signupLink;
     String selectedOwner;
+    ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class LoginActivity
         passwordText = findViewById(R.id.input_password);
         loginButton = findViewById(R.id.btn_login);
         signupLink = findViewById(R.id.link_signup);
-
+        progressBar = findViewById(R.id.progressbar);
         sharedPreferences = getSharedPreferences("Session",
                 MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -64,8 +66,15 @@ public class LoginActivity
     }
 
     public void loginButtonOnClick(View view) {
+
+
         final String phonenumber = phoneText.getText().toString();
         final String password = passwordText.getText().toString();
+        phoneText.setEnabled(false);
+        passwordText.setEnabled(false);
+        loginButton.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        signupLink.setVisibility(View.GONE);
         if (phonenumber.equals("Admin") && password
                 .equals("Admin") && selectedOwner.equals("Admin")) {
             editor.putString("phone",

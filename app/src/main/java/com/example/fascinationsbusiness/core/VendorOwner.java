@@ -2,11 +2,14 @@ package com.example.fascinationsbusiness.core;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Map;
+
 public class VendorOwner extends Owner {
     private FoodCategory foodCategory;
     private String qrCodeURL;
     private double avgRating;
     private int numberOfRatings;
+    private Map<String, Integer> foodMenu;
 
     public VendorOwner(String name, String email, String password,
                        String ifscCode,
@@ -55,6 +58,14 @@ public class VendorOwner extends Owner {
 
     public void setNumberOfRatings(int numberOfRatings) {
         this.numberOfRatings = numberOfRatings;
+    }
+
+    public Map<String, Integer> getFoodMenu() {
+        return foodMenu;
+    }
+
+    public void setFoodMenu(Map<String, Integer> foodMenu) {
+        this.foodMenu = foodMenu;
     }
 
     @Override public String toString() {

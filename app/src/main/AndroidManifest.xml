@@ -21,10 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".SetFoodCatalogue"></activity>
         <activity
             android:name=".VendorOwnerHomePageActivity"
             android:label="@string/title_activity_vendor_owner_home_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.ListViewItemDeleteService"

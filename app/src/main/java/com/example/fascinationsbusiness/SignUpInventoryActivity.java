@@ -112,6 +112,18 @@ public class SignUpInventoryActivity
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                emailText.setEnabled(false);
+                nameText.setEnabled(false);
+                addressText.setEnabled(false);
+                capacityText.setEnabled(false);
+                accountNumberText.setEnabled(false);
+                panText.setEnabled(false);
+                ifscText.setEnabled(false);
+                passwordText.setEnabled(false);
+               // setLocationButton.setVisibility(View.GONE);
+               // uploadPhotoButton.setVisibility(View.GONE);
                 signUpButton.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
                 uploadImage();

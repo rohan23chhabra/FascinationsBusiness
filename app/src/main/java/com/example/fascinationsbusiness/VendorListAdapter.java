@@ -42,16 +42,6 @@ public class VendorListAdapter extends ArrayAdapter<User> {
                 .into(imageView);
 
 
-//        try {
-//            URL url =
-//                    new URL(user.getImageURL());
-//            Bitmap bmp =
-//                    BitmapFactory.decodeStream(
-//                            url.openConnection().getInputStream());
-//            imageView.setImageBitmap(bmp);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
 
         nameView.setText("User Name: " + user.getName());

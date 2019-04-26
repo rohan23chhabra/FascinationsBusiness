@@ -66,6 +66,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
     Button locationButton;
     Button uploadButton;
     Button signUpButton;
+    Button foodCatalogueButton;
 
     VendorOwner vendorOwner;
     String phoneNumber;
@@ -101,6 +102,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
         locationButton = findViewById(R.id.vendor_btn_location);
         uploadButton = findViewById(R.id.vendor_btn_upload_photo);
         signUpButton = findViewById(R.id.vendor_btn_signup);
+        foodCatalogueButton = findViewById(R.id.vendor_btn_food_catalogue);
 
         Arrays.sort(FOOD_CATEGORIES);
         List<String> foodCategories =
@@ -144,6 +146,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
                 vendorOwner.getFoodCategory().toString()));
         this.markedLocation = extras.getParcelable("vendor-location");
         vendorOwner.setLocation(markedLocation);
+
         //qrCode = extras.getParcelable("qr-code");
     }
 
@@ -284,6 +287,19 @@ public class SignUpVendorActivity extends AppCompatActivity {
     private void signUpVendorOnClickHelper() {
         signUpButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+        spinner.setEnabled(false);
+        nameText.setEnabled(false);
+        emailText.setEnabled(false);
+        passwordText.setEnabled(false);
+        addressText.setEnabled(false);
+
+        accountNumberText.setEnabled(false);
+        panText.setEnabled(false);
+        ifscText.setEnabled(false);
+        locationButton.setEnabled(false);
+        uploadButton.setEnabled(false);
+        foodCatalogueButton.setEnabled(false);
+
         uploadImage(bitmap, "vendor-images/");
         setDownloadURLforImage("vendor-images/", filePath, false);
         uploadImage(qrCode, "vendor-images/qr-codes/");
@@ -393,5 +409,13 @@ public class SignUpVendorActivity extends AppCompatActivity {
                                 }
                             }
                         });
+    }
+
+    public void foodCatalogueOnClick(View view) {
+        Intent intent = new Intent(this, SetFoodCatalogue.class);
+        vendorOwner.setLocation(null);
+        intent.putExtra("vendor-owner", vendorOwner);
+        intent.putExtra("marked-location", markedLocation);
+        startActivity(intent);
     }
 }

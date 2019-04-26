@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0ab344"
+    android:background="@android:color/white"
     android:fitsSystemWindows="true"
     tools:context=".SignUpVendorActivity">
 
@@ -153,6 +153,16 @@
             android:text="Set Location" />
 
         <android.support.v7.widget.AppCompatButton
+            android:id="@+id/vendor_btn_food_catalogue"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:onClick="foodCatalogueOnClick"
+            android:padding="12dp"
+            android:text="Set food catalogue" />
+
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/vendor_btn_upload_photo"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -167,8 +177,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
-            android:padding="12dp"
             android:onClick="signUpVendorOnClick"
+            android:padding="12dp"
             android:text="Sign Up" />
 
         <ProgressBar

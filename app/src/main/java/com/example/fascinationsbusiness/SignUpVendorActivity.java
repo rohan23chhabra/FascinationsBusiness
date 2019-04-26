@@ -160,7 +160,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
         vendorOwner = new VendorOwner(name, email, password, ifsc, phoneNumber,
                 pan, null,
                 accountNumber, null, null, null, "true", address, foodCategory,
-                null);
+                null, 0.0, 0);
 
     }
 

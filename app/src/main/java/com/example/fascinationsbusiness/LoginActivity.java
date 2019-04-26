@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.example.fascinationsbusiness.core.InventoryOwner;
+import com.example.fascinationsbusiness.core.Owner;
 import com.example.fascinationsbusiness.serialize.MyGson;
 import com.example.fascinationsbusiness.service.NotificationService;
 import com.google.firebase.database.DataSnapshot;
@@ -56,7 +56,7 @@ public class LoginActivity
             if (view.getId() == R.id.radio_admin) {
                 selectedOwner = "Admin";
             } else if (view.getId() == R.id.radio_food_vendor) {
-                selectedOwner = "food-vendor-owner";
+                selectedOwner = "vendor-owner";
             } else {
                 selectedOwner = "inventory-owner";
             }
@@ -89,10 +89,10 @@ public class LoginActivity
                             public void onDataChange(
                                     @NonNull DataSnapshot dataSnapshot) {
                                 Gson gson = MyGson.getGson();
-                                InventoryOwner owner = gson.fromJson(gson
+                                Owner owner = gson.fromJson(gson
                                                 .toJson(dataSnapshot
                                                         .getValue()),
-                                        InventoryOwner.class);
+                                        Owner.class);
                                 assert owner != null;
                                 String pass = owner.getPassword();
                                 if (passwordText.getText().toString()
@@ -111,6 +111,12 @@ public class LoginActivity
                                                 LoginActivity.this,
                                                 InventoryOwnerHomePageActivity.class);
                                         intent.putExtra("phone", phonenumber);
+                                        LoginActivity.this
+                                                .startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(
+                                                LoginActivity.this,
+                                                VendorOwnerHomePageActivity.class);
                                         LoginActivity.this
                                                 .startActivity(intent);
                                     }

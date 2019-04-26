@@ -113,4 +113,7 @@
         <item>DESSERT</item>
         <item>MILKSHAKES</item>
     </string-array>
+    <string name="title_activity_vendor_owner_home_page">
+        VendorOwnerHomePageActivity
+    </string>
 </resources>

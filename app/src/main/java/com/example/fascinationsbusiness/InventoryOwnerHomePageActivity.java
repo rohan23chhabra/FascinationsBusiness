@@ -82,128 +82,164 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
         verifyStatusView = findViewById(R.id.verification_status);
         listView = findViewById(R.id.listview);
 
-        DB.getDatabaseReference().child("pending-inventory-requests").addValueEventListener(
-                new ValueEventListener() {
-                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        DB.getDatabaseReference().child("pending-inventory-requests")
+                .addValueEventListener(
+                        new ValueEventListener() {
+                            @Override public void onDataChange(
+                                    @NonNull DataSnapshot dataSnapshot) {
 
 
-                        Iterator<DataSnapshot> dataSnapshotIterator =
-                                dataSnapshot.getChildren().iterator();
-                        userPhoneList.clear();
-                        userBagsList.clear();
-                        while (dataSnapshotIterator.hasNext()) {
-                            DataSnapshot dataSnapshotChild = dataSnapshotIterator.next();
-                            final Gson gson = MyGson.getGson();
-                            final InventoryRequest request =
-                                    gson.fromJson(gson.toJson(dataSnapshotChild.getValue()),
-                                            InventoryRequest.class);
+                                Iterator<DataSnapshot> dataSnapshotIterator =
+                                        dataSnapshot.getChildren().iterator();
+                                userPhoneList.clear();
+                                userBagsList.clear();
+                                while (dataSnapshotIterator.hasNext()) {
+                                    DataSnapshot dataSnapshotChild =
+                                            dataSnapshotIterator.next();
+                                    final Gson gson = MyGson.getGson();
+                                    final InventoryRequest request =
+                                            gson.fromJson(gson.toJson(
+                                                    dataSnapshotChild
+                                                            .getValue()),
+                                                    InventoryRequest.class);
 
-                            final String user = gson
-                                    .fromJson(gson.toJson(dataSnapshotChild.getKey()),
-                                            String.class);
-                            String loggedInPhoneNumber =
-                                    new SessionDetails(getApplicationContext())
-                                            .getSharedPreferences().getString("phone",
-                                            "56");
-                            if (loggedInPhoneNumber.equals(request.getOwnerPhoneNumber())) {
-                                final int[] prevCapacity = {0};
-                                DB.getDatabaseReference().child("inventory-owner")
-                                        .child(request.getOwnerPhoneNumber())
-                                        .child("capacity").addValueEventListener(
-                                        new ValueEventListener() {
-                                            @Override public void onDataChange(
-                                                    @NonNull DataSnapshot dataSnapshot) {
-                                                prevCapacity[0] =
-                                                        gson.fromJson(gson.toJson(
-                                                                dataSnapshot.getValue()),
-                                                                int.class);
-                                                Log.i("mc-bc-aids",
-                                                        String.valueOf(prevCapacity[0]));
+                                    final String user = gson
+                                            .fromJson(gson.toJson(
+                                                    dataSnapshotChild.getKey()),
+                                                    String.class);
+                                    String loggedInPhoneNumber =
+                                            new SessionDetails(
+                                                    getApplicationContext())
+                                                    .getSharedPreferences()
+                                                    .getString("phone",
+                                                            "56");
+                                    if (loggedInPhoneNumber.equals(request
+                                            .getOwnerPhoneNumber())) {
+                                        final int[] prevCapacity = {0};
+                                        DB.getDatabaseReference()
+                                                .child("inventory-owner")
+                                                .child(request
+                                                        .getOwnerPhoneNumber())
+                                                .child("capacity")
+                                                .addValueEventListener(
+                                                        new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(
+                                                                    @NonNull DataSnapshot dataSnapshot) {
+                                                                prevCapacity[0] =
+                                                                        gson.fromJson(
+                                                                                gson.toJson(
+                                                                                        dataSnapshot
+                                                                                                .getValue()),
+                                                                                int.class);
+                                                                Log.i("mc-bc-aids",
+                                                                        String.valueOf(
+                                                                                prevCapacity[0]));
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(
+                                                                    @NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
+                                        userPhoneList.add(user);
+                                        userBagsList
+                                                .add(request.getNumberOfBags());
+                                        final Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                //Do something after 100ms
+                                                final Intent intent =
+                                                        new Intent(
+                                                                InventoryOwnerHomePageActivity.this,
+                                                                ListViewItemDeleteService.class);
+                                                intent.putExtra(
+                                                        "user-phone-number",
+                                                        user);
+                                                intent.putExtra("add-capacity",
+                                                        request.getNumberOfBags());
+                                                intent.putExtra(
+                                                        "current-time-millis",
+                                                        request.getCurrentTimeMillis());
+                                                intent.putExtra(
+                                                        "owner-phone-number",
+                                                        request.getOwnerPhoneNumber());
+                                                intent.putExtra("prev-capacity",
+                                                        prevCapacity[0]);
+                                                startService(intent);
                                             }
-
-                                            @Override public void onCancelled(
-                                                    @NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-                                userPhoneList.add(user);
-                                userBagsList.add(request.getNumberOfBags());
-                                final Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        //Do something after 100ms
-                                        final Intent intent = new Intent(
-                                                InventoryOwnerHomePageActivity.this,
-                                                ListViewItemDeleteService.class);
-                                        intent.putExtra("user-phone-number", user);
-                                        intent.putExtra("add-capacity", request.getNumberOfBags());
-                                        intent.putExtra("current-time-millis",
-                                                request.getCurrentTimeMillis());
-                                        intent.putExtra("owner-phone-number",
-                                                request.getOwnerPhoneNumber());
-                                        intent.putExtra("prev-capacity", prevCapacity[0]);
-                                        startService(intent);
+                                        }, 2000);
                                     }
-                                }, 2000);
-                            }
-                        }
-                        //final Semaphore userListSemaphore = new Semaphore(0);
-                        for (int i = 0;
-                                i < userBagsList.size();
-                                i++) {
-                            String userPhone = userPhoneList.get(i);
-                            final int userBag = userBagsList.get(i);
-                            DB.getDatabaseReference().child("users").child(userPhone)
-                                    .addValueEventListener(
-                                            new ValueEventListener() {
-                                                @Override public void onDataChange(
-                                                        @NonNull DataSnapshot dataSnapshot) {
-                                                    Gson gson = MyGson.getGson();
-                                                    User user = gson.fromJson(
-                                                            gson.toJson(dataSnapshot.getValue()),
-                                                            User.class);
-                                                    user.setNumberOfBags(userBag);
-                                                    userList.add(user);
-                                                }
+                                }
+                                //final Semaphore userListSemaphore = new Semaphore(0);
+                                for (int i = 0;
+                                        i < userBagsList.size();
+                                        i++) {
+                                    String userPhone = userPhoneList.get(i);
+                                    final int userBag = userBagsList.get(i);
+                                    DB.getDatabaseReference().child("users")
+                                            .child(userPhone)
+                                            .addValueEventListener(
+                                                    new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(
+                                                                @NonNull DataSnapshot dataSnapshot) {
+                                                            Gson gson =
+                                                                    MyGson.getGson();
+                                                            User user =
+                                                                    gson.fromJson(
+                                                                            gson.toJson(
+                                                                                    dataSnapshot
+                                                                                            .getValue()),
+                                                                            User.class);
+                                                            user.setNumberOfBags(
+                                                                    userBag);
+                                                            userList.add(user);
+                                                        }
 
-                                                @Override public void onCancelled(
-                                                        @NonNull DatabaseError databaseError) {
-                                                }
-                                            });
-                            //userListSemaphore.release();
-                        }
+                                                        @Override
+                                                        public void onCancelled(
+                                                                @NonNull DatabaseError databaseError) {
+                                                        }
+                                                    });
+                                    //userListSemaphore.release();
+                                }
 //                        try {
 //                            userListSemaphore.acquire();
 //                        } catch (InterruptedException e) {
 //                            e.printStackTrace();
 //                        }
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                //Do something after 100ms
-                                CustomAdapter customAdapter =
-                                        new CustomAdapter(InventoryOwnerHomePageActivity.this,
-                                                userList);
-                                listView.setAdapter(customAdapter);
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //Do something after 100ms
+                                        CustomAdapter customAdapter =
+                                                new CustomAdapter(
+                                                        InventoryOwnerHomePageActivity.this,
+                                                        userList);
+                                        listView.setAdapter(customAdapter);
+                                    }
+                                }, 1000);
+
                             }
-                        }, 1000);
 
-                    }
-
-                    @Override public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override public void onCancelled(
+                                    @NonNull DatabaseError databaseError) {
 
 
-                    }
-                });
+                            }
+                        });
 
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
-            phoneNumber = new SessionDetails(this).getSharedPreferences().getString("phone", "89");
+            phoneNumber = new SessionDetails(this).getSharedPreferences()
+                    .getString("phone", "89");
         } else {
             phoneNumber = bundle.getString("phone");
         }
@@ -282,11 +318,13 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_opening_time) {
-            Intent intent = new Intent(InventoryOwnerHomePageActivity.this, SetOpeningTime.class);
+            Intent intent = new Intent(InventoryOwnerHomePageActivity.this,
+                    SetOpeningTime.class);
             intent.putExtra("phonenumber", phoneNumber);
             startActivity(intent);
         } else if (id == R.id.nav_closing_time) {
-            Intent intent = new Intent(InventoryOwnerHomePageActivity.this, SetClosingTime.class);
+            Intent intent = new Intent(InventoryOwnerHomePageActivity.this,
+                    SetClosingTime.class);
             intent.putExtra("phonenumber", phoneNumber);
             startActivity(intent);
 
@@ -296,7 +334,8 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
             intent.putExtra("phonenumber", phoneNumber);
             startActivity(intent);
         } else if (id == R.id.nav_set_price) {
-            Intent intent = new Intent(InventoryOwnerHomePageActivity.this, SetPriceActivity.class);
+            Intent intent = new Intent(InventoryOwnerHomePageActivity.this,
+                    SetPriceActivity.class);
             intent.putExtra("phone", phoneNumber);
             startActivity(intent);
         }

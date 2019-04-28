@@ -301,7 +301,9 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
                     "Session",
                     MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
+            editor.remove("phone");
+            editor.remove("password");
+            editor.remove("selectedOwner");
             editor.apply();
             Intent intent = new Intent(InventoryOwnerHomePageActivity.this,
                     LoginActivity.class);

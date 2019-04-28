@@ -1,7 +1,8 @@
 package com.example.fascinationsbusiness;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 import com.example.fascinationsbusiness.core.User;
 import com.example.fascinationsbusiness.core.VendorTransaction;
 import com.example.fascinationsbusiness.db.DB;
+import com.example.fascinationsbusiness.net.UserFetchCallback;
+import com.example.fascinationsbusiness.net.UserPhoneFetchCallback;
 import com.example.fascinationsbusiness.serialize.MyGson;
 import com.example.fascinationsbusiness.util.SessionDetails;
 import com.google.firebase.database.DataSnapshot;
@@ -71,6 +74,21 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
         //verifyStatusView = findViewById(R.id.vendor_verification_status);
         listView = findViewById(R.id.user_list);
 
+        populateUserPhoneNumberList(new UserPhoneFetchCallback() {
+            @Override public void onUsersPhoneFetched(List<String> userPhoneList) {
+                populateUserList(userPhoneList.size(), new UserFetchCallback() {
+                    @Override public void onUsersFetched(List<User> userList) {
+                        VendorListAdapter vendorListAdapter =
+                                new VendorListAdapter(VendorOwnerHomePageActivity.this,
+                                        userList);
+                        listView.setAdapter(vendorListAdapter);
+                    }
+                });
+            }
+        });
+    }
+
+    private void populateUserPhoneNumberList(final UserPhoneFetchCallback userPhoneFetchCallback) {
         DB.getDatabaseReference().child("vendor-transaction")
                 .addValueEventListener(
                         new ValueEventListener() {
@@ -89,7 +107,7 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
                                                     String.class);
                                     String loggedInPhoneNumber =
                                             new SessionDetails(
-                                                    getApplicationContext())
+                                                    VendorOwnerHomePageActivity.this)
                                                     .getSharedPreferences()
                                                     .getString("phone",
                                                             "56");
@@ -99,49 +117,47 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
                                         userPhoneList.add(userPhoneNumber);
                                     }
                                 }
-                                for (String userPhone : userPhoneList) {
-                                    DB.getDatabaseReference()
-                                            .child("users")
-                                            .child(userPhone)
-                                            .addValueEventListener(
-                                                    new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(
-                                                                @NonNull DataSnapshot dataSnapshot) {
-                                                            User user =
-                                                                    gson.fromJson(
-                                                                            gson.toJson(
-                                                                                    dataSnapshot
-                                                                                            .getValue()),
-                                                                            User.class);
-                                                            userList.add(
-                                                                    user);
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(
-                                                                @NonNull DatabaseError databaseError) {
-
-                                                        }
-                                                    });
-                                }
+                                userPhoneFetchCallback.onUsersPhoneFetched(userPhoneList);
                             }
 
                             @Override public void onCancelled(
                                     @NonNull DatabaseError databaseError) {
-
                             }
                         });
+    }
 
+    private void populateUserList(final int numberOfUsers,
+                                  final UserFetchCallback userFetchCallback) {
+        final int[] count = {0};
+        for (String userPhone : userPhoneList) {
+            DB.getDatabaseReference()
+                    .child("users")
+                    .child(userPhone)
+                    .addValueEventListener(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(
+                                        @NonNull DataSnapshot dataSnapshot) {
+                                    User user =
+                                            gson.fromJson(
+                                                    gson.toJson(
+                                                            dataSnapshot
+                                                                    .getValue()),
+                                                    User.class);
+                                    userList.add(
+                                            user);
+                                    count[0]++;
+                                    if (count[0] == numberOfUsers) {
+                                        userFetchCallback.onUsersFetched(userList);
+                                    }
+                                }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                VendorListAdapter vendorListAdapter =
-                        new VendorListAdapter(VendorOwnerHomePageActivity.this,
-                                userList);
-                listView.setAdapter(vendorListAdapter);
-            }
-        }, 1500);
+                                @Override
+                                public void onCancelled(
+                                        @NonNull DatabaseError databaseError) {
+                                }
+                            });
+        }
     }
 
     @Override
@@ -170,7 +186,17 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            SharedPreferences sharedPreferences = getSharedPreferences(
+                    "Session",
+                    MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("phone");
+            editor.remove("password");
+            editor.remove("selectedOwner");
+            editor.apply();
+            Intent intent = new Intent(VendorOwnerHomePageActivity.this,
+                    LoginActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -200,4 +226,6 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

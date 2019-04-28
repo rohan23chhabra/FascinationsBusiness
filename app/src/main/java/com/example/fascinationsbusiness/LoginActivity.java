@@ -54,6 +54,36 @@ public class LoginActivity
                 MODE_PRIVATE);
         editor = sharedPreferences.edit();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        if (!sharedPreferences.getString("phone", "#").equals("#") && !sharedPreferences.getString(
+                "password", "#").equals("#") && !sharedPreferences.getString("selectedOwner", "#")
+                .equals(
+                        "#")) {
+            progressBar.setVisibility(View.VISIBLE);
+            loginButton.setEnabled(false);
+            Toast.makeText(LoginActivity.this, "Logging In", Toast.LENGTH_SHORT).show();
+            phoneText.setText(sharedPreferences.getString("phone", "#"));
+            passwordText.setText(sharedPreferences.getString(
+                    "password", "#"));
+            selectedOwner = sharedPreferences.getString("selectedOwner", "#");
+            if (selectedOwner.equals("vendor-owner")) {
+                Intent intent = new Intent(
+                        LoginActivity.this,
+                        VendorOwnerHomePageActivity.class);
+                LoginActivity.this.startActivity(intent);
+                finish();
+            }
+            if (selectedOwner.equals("inventory-owner")) {
+                Intent intent = new Intent(
+                        LoginActivity.this,
+                        InventoryOwnerHomePageActivity.class);
+                intent.putExtra("phone", sharedPreferences.getString("phone", "#"));
+                LoginActivity.this.startActivity(intent);
+                finish();
+            }
+
+        }
+
     }
 
     public void onRadioButtonClicked(View view) {
@@ -75,8 +105,7 @@ public class LoginActivity
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if((networkInfo!=null)&&(networkInfo.isConnected()))
-        {
+        if ((networkInfo != null) && (networkInfo.isConnected())) {
             final String phonenumber = phoneText.getText().toString();
             final String password = passwordText.getText().toString();
             phoneText.setEnabled(false);
@@ -120,7 +149,8 @@ public class LoginActivity
                                         Log.i("login", "Successful login.");
                                         editor.putString("phone",
                                                 phonenumber);
-                                        editor.putString("password", hash1);
+                                        editor.putString("password", owner.getPassword());
+                                        editor.putString("selectedOwner", selectedOwner);
                                         editor.apply();
                                         startService(new Intent(LoginActivity.this,
                                                 NotificationService.class));
@@ -150,9 +180,8 @@ public class LoginActivity
 
                                 }
                             });
-        }
-        else {
-            Toast.makeText(LoginActivity.this,"No Network Connection",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(LoginActivity.this, "No Network Connection", Toast.LENGTH_SHORT).show();
         }
 
     }

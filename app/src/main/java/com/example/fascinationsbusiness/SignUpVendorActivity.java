@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.example.fascinationsbusiness.core.FoodCategory;
 import com.example.fascinationsbusiness.core.VendorOwner;
 import com.example.fascinationsbusiness.db.DB;
+import com.example.fascinationsbusiness.security.SecurePassword;
 import com.example.fascinationsbusiness.util.SessionDetails;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
@@ -60,9 +61,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
     EditText passwordText;
     EditText addressText;
     ProgressBar progressBar;
-    EditText accountNumberText;
-    EditText panText;
-    EditText ifscText;
+    EditText upiIdText;
     Button locationButton;
     Button uploadButton;
     Button signUpButton;
@@ -96,9 +95,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
         passwordText = findViewById(R.id.input_vendor_password);
         addressText = findViewById(R.id.input_vendor_address);
         progressBar = findViewById(R.id.vendor_progressbar);
-        accountNumberText = findViewById(R.id.input_vendor_account_number);
-        panText = findViewById(R.id.input_vendor_pan);
-        ifscText = findViewById(R.id.input_vendor_ifsc);
+        upiIdText = findViewById(R.id.input_vendor_upi_id);
         locationButton = findViewById(R.id.vendor_btn_location);
         uploadButton = findViewById(R.id.vendor_btn_upload_photo);
         signUpButton = findViewById(R.id.vendor_btn_signup);
@@ -138,9 +135,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
         emailText.setText(vendorOwner.getEmail());
         nameText.setText(vendorOwner.getName());
         passwordText.setText(vendorOwner.getPassword());
-        accountNumberText.setText(vendorOwner.getAccountNumber());
-        panText.setText(vendorOwner.getPanNumber());
-        ifscText.setText(vendorOwner.getIfscCode());
+        upiIdText.setText(vendorOwner.getUpiId());
         addressText.setText(vendorOwner.getAddress());
         spinner.setSelection(Arrays.binarySearch(FOOD_CATEGORIES,
                 vendorOwner.getFoodCategory().toString()));
@@ -154,16 +149,13 @@ public class SignUpVendorActivity extends AppCompatActivity {
         String name = nameText.getText().toString();
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
-        String pan = panText.getText().toString();
-        String ifsc = ifscText.getText().toString();
-        String accountNumber = accountNumberText.getText().toString();
+        String upiId = upiIdText.getText().toString();
         String address = addressText.getText().toString();
         FoodCategory foodCategory =
                 FoodCategory.valueOf(spinner.getSelectedItem().toString());
-        vendorOwner = new VendorOwner(name, email, password, ifsc, phoneNumber,
-                pan, null,
-                accountNumber, null, null, null, "true", address, foodCategory,
-                null, 0.0, 0);
+        String hash = SecurePassword.getHashedPassword(password, phoneNumber);
+        vendorOwner = new VendorOwner(name, email, hash, phoneNumber, null, upiId, null, null
+                , null, "true", address, foodCategory, null, 0.0, 0);
 
     }
 
@@ -293,9 +285,7 @@ public class SignUpVendorActivity extends AppCompatActivity {
         passwordText.setEnabled(false);
         addressText.setEnabled(false);
 
-        accountNumberText.setEnabled(false);
-        panText.setEnabled(false);
-        ifscText.setEnabled(false);
+        upiIdText.setEnabled(false);
         locationButton.setEnabled(false);
         uploadButton.setEnabled(false);
         foodCatalogueButton.setEnabled(false);

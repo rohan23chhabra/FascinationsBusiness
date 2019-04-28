@@ -14,17 +14,12 @@ public class InventoryOwner extends Owner {
     }
 
     public InventoryOwner(String name, String email, String password,
-                          String ifscCode, String phoneNumber,
-                          String panNumber,
-                          String imageURL, String accountNumber,
-                          LatLng location,
-                          String openingTime, String closingTime,
-                          String open,
-                          int capacity, String address, int price) {
-        super(name, email, password, ifscCode, phoneNumber,
-                panNumber,
-                imageURL, accountNumber, location, openingTime, closingTime,
-                open, address);
+                          String phoneNumber, String imageURL, String upiId,
+                          LatLng location, String openingTime, String closingTime,
+                          String open, int capacity, String address, int price) {
+        super(name, email, password, phoneNumber,
+                imageURL, location, openingTime, closingTime,
+                open, address, upiId);
         this.capacity = capacity;
         this.price = price;
     }

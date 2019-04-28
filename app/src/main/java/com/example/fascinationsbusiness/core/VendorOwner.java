@@ -11,17 +11,12 @@ public class VendorOwner extends Owner {
     private int numberOfRatings;
     private Map<String, Integer> foodMenu;
 
-    public VendorOwner(String name, String email, String password,
-                       String ifscCode,
-                       String phoneNumber, String panNumber, String imageURL,
-                       String accountNumber, LatLng location,
-                       String openingTime, String closingTime, String isOpen,
-                       String address,
-                       FoodCategory foodCategory, String qrCodeURL,
-                       double avgRating, int numberOfRatings) {
-        super(name, email, password, ifscCode, phoneNumber, panNumber, imageURL,
-                accountNumber,
-                location, openingTime, closingTime, isOpen, address);
+    public VendorOwner(String name, String email, String password, String phoneNumber,
+                       String imageURL, String upiId, LatLng location, String openingTime,
+                       String closingTime, String isOpen, String address, FoodCategory foodCategory,
+                       String qrCodeURL, double avgRating, int numberOfRatings) {
+        super(name, email, password, phoneNumber, imageURL, location, openingTime, closingTime,
+                isOpen, address, upiId);
         this.foodCategory = foodCategory;
         this.qrCodeURL = qrCodeURL;
         this.avgRating = avgRating;

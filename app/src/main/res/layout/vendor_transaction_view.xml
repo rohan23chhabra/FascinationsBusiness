@@ -45,5 +45,12 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/view_order_by_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="View Order" />
+
 </LinearLayout>
 

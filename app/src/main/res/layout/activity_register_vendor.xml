@@ -19,6 +19,7 @@
             android:id="@+id/vendor_image"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="12dp"
             android:src="@drawable/logo" />
 
@@ -91,41 +92,11 @@
             android:layout_marginBottom="8dp">
 
             <EditText
-                android:id="@+id/input_vendor_account_number"
+                android:id="@+id/input_vendor_upi_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
-                android:hint="Bank account number"
-                android:inputType="number" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-
-            <EditText
-                android:id="@+id/input_vendor_pan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:hint="PAN Number"
-                android:inputType="text" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-
-            <EditText
-                android:id="@+id/input_vendor_ifsc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:hint="IFSC Code"
+                android:hint="Upi Id (any app)"
                 android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 

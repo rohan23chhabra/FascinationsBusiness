@@ -8,11 +8,9 @@ public class Owner implements Serializable {
     private String name;
     private String email;
     private String password;
-    private String ifscCode;
     private String phoneNumber;
-    private String panNumber;
+    private String upiId;
     private String imageURL;
-    private String accountNumber;
     private LatLng location;
     private String openingTime;
     private String closingTime;
@@ -23,24 +21,20 @@ public class Owner implements Serializable {
     public Owner() {
     }
 
-    public Owner(String name, String email, String password,
-                 String ifscCode, String phoneNumber,
-                 String panNumber, String imageURL, String accountNumber,
-                 LatLng location, String openingTime, String closingTime,
-                 String isOpen, String address) {
+    public Owner(String name, String email, String password, String phoneNumber, String imageURL,
+                 LatLng location, String openingTime, String closingTime, String isOpen,
+                 String address, String upiId) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.ifscCode = ifscCode;
         this.phoneNumber = phoneNumber;
-        this.panNumber = panNumber;
         this.imageURL = imageURL;
-        this.accountNumber = accountNumber;
         this.location = location;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
         this.open = isOpen;
         this.address = address;
+        this.upiId = upiId;
     }
 
     public String getName() {
@@ -67,14 +61,6 @@ public class Owner implements Serializable {
         this.password = password;
     }
 
-    public String getIfscCode() {
-        return ifscCode;
-    }
-
-    public void setIfscCode(String ifscCode) {
-        this.ifscCode = ifscCode;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -83,28 +69,12 @@ public class Owner implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPanNumber() {
-        return panNumber;
-    }
-
-    public void setPanNumber(String panNumber) {
-        this.panNumber = panNumber;
-    }
-
     public String getImageURL() {
         return imageURL;
     }
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public LatLng getLocation() {
@@ -155,21 +125,27 @@ public class Owner implements Serializable {
         this.closingTime = closingTime;
     }
 
+    public String getUpiId() {
+        return upiId;
+    }
+
+    public void setUpiId(String upiId) {
+        this.upiId = upiId;
+    }
+
     @Override public String toString() {
         return "Owner{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", ifscCode='" + ifscCode + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", panNumber='" + panNumber + '\'' +
+                ", upiId='" + upiId + '\'' +
                 ", imageURL='" + imageURL + '\'' +
-                ", accountNumber='" + accountNumber + '\'' +
                 ", location=" + location +
-                ", openingTime=" + openingTime +
-                ", closingTime=" + closingTime +
-                ", open=" + open +
-                ", verified=" + verified +
+                ", openingTime='" + openingTime + '\'' +
+                ", closingTime='" + closingTime + '\'' +
+                ", open='" + open + '\'' +
+                ", verified='" + verified + '\'' +
                 ", address='" + address + '\'' +
                 '}';
     }

@@ -1,7 +1,10 @@
 package com.example.fascinationsbusiness;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +15,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fascinationsbusiness.core.Owner;
+import com.example.fascinationsbusiness.security.SecurePassword;
 import com.example.fascinationsbusiness.serialize.MyGson;
 import com.example.fascinationsbusiness.service.NotificationService;
 import com.google.firebase.database.DataSnapshot;
@@ -67,78 +72,89 @@ public class LoginActivity
 
     public void loginButtonOnClick(View view) {
 
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if((networkInfo!=null)&&(networkInfo.isConnected()))
+        {
+            final String phonenumber = phoneText.getText().toString();
+            final String password = passwordText.getText().toString();
+            phoneText.setEnabled(false);
+            passwordText.setEnabled(false);
+            loginButton.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            signupLink.setVisibility(View.GONE);
+            if (phonenumber.equals("Admin") && password
+                    .equals("Admin") && selectedOwner.equals("Admin")) {
+                editor.putString("phone",
+                        "Admin");
+                editor.putString("password", "Admin");
+                editor.apply();
+                Intent intent = new Intent(
+                        LoginActivity.this,
+                        AdminActivity.class);
+                LoginActivity.this
+                        .startActivity(intent);
+                return;
+            }
+            FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child(selectedOwner)
+                    .child(phonenumber)
+                    .addValueEventListener(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(
+                                        @NonNull DataSnapshot dataSnapshot) {
+                                    Gson gson = MyGson.getGson();
+                                    Owner owner = gson.fromJson(gson
+                                                    .toJson(dataSnapshot
+                                                            .getValue()),
+                                            Owner.class);
+                                    assert owner != null;
+                                    String hash1 = owner.getPassword();
+                                    String hash2 =
+                                            SecurePassword.getHashedPassword(
+                                                    passwordText.getText().toString(), phonenumber);
+                                    if (hash1.equals(hash2)) {
+                                        Log.i("login", "Successful login.");
+                                        editor.putString("phone",
+                                                phonenumber);
+                                        editor.putString("password", hash1);
+                                        editor.apply();
+                                        startService(new Intent(LoginActivity.this,
+                                                NotificationService.class));
+                                        Log.i("login", "Ho gya " + "be");
+                                        if (selectedOwner.equals(
+                                                "inventory-owner")) {
+                                            Intent intent = new Intent(
+                                                    LoginActivity.this,
+                                                    InventoryOwnerHomePageActivity.class);
+                                            intent.putExtra("phone", phonenumber);
+                                            LoginActivity.this
+                                                    .startActivity(intent);
+                                        } else {
+                                            Intent intent = new Intent(
+                                                    LoginActivity.this,
+                                                    VendorOwnerHomePageActivity.class);
+                                            LoginActivity.this
+                                                    .startActivity(intent);
+                                        }
 
-        final String phonenumber = phoneText.getText().toString();
-        final String password = passwordText.getText().toString();
-        phoneText.setEnabled(false);
-        passwordText.setEnabled(false);
-        loginButton.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-        signupLink.setVisibility(View.GONE);
-        if (phonenumber.equals("Admin") && password
-                .equals("Admin") && selectedOwner.equals("Admin")) {
-            editor.putString("phone",
-                    "Admin");
-            editor.putString("password", "Admin");
-            editor.apply();
-            Intent intent = new Intent(
-                    LoginActivity.this,
-                    AdminActivity.class);
-            LoginActivity.this
-                    .startActivity(intent);
-            return;
-        }
-        FirebaseDatabase.getInstance()
-                .getReference()
-                .child(selectedOwner)
-                .child(phonenumber)
-                .addValueEventListener(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(
-                                    @NonNull DataSnapshot dataSnapshot) {
-                                Gson gson = MyGson.getGson();
-                                Owner owner = gson.fromJson(gson
-                                                .toJson(dataSnapshot
-                                                        .getValue()),
-                                        Owner.class);
-                                assert owner != null;
-                                String pass = owner.getPassword();
-                                if (passwordText.getText().toString()
-                                        .equals(pass)) {
-                                    Log.i("login", "Successful login.");
-                                    editor.putString("phone",
-                                            phonenumber);
-                                    editor.putString("password", pass);
-                                    editor.apply();
-                                    startService(new Intent(LoginActivity.this,
-                                            NotificationService.class));
-                                    Log.i("login", "Ho gya " + "be");
-                                    if (selectedOwner.equals(
-                                            "inventory-owner")) {
-                                        Intent intent = new Intent(
-                                                LoginActivity.this,
-                                                InventoryOwnerHomePageActivity.class);
-                                        intent.putExtra("phone", phonenumber);
-                                        LoginActivity.this
-                                                .startActivity(intent);
-                                    } else {
-                                        Intent intent = new Intent(
-                                                LoginActivity.this,
-                                                VendorOwnerHomePageActivity.class);
-                                        LoginActivity.this
-                                                .startActivity(intent);
                                     }
+                                }
+
+                                @Override
+                                public void onCancelled(
+                                        @NonNull DatabaseError databaseError) {
 
                                 }
-                            }
+                            });
+        }
+        else {
+            Toast.makeText(LoginActivity.this,"No Network Connection",Toast.LENGTH_SHORT).show();
+        }
 
-                            @Override
-                            public void onCancelled(
-                                    @NonNull DatabaseError databaseError) {
-
-                            }
-                        });
     }
 
     public void signUpOnClick(View view) {

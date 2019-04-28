@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.fascinationsbusiness.core.InventoryOwner;
+import com.example.fascinationsbusiness.security.SecurePassword;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,9 +42,7 @@ public class SignUpInventoryActivity
     EditText nameText;
     EditText addressText;
     EditText capacityText;
-    EditText accountNumberText;
-    EditText panText;
-    EditText ifscText;
+    EditText upiIdText;
     EditText passwordText;
     Button signUpButton;
     Button setLocationButton;
@@ -70,10 +69,8 @@ public class SignUpInventoryActivity
         emailText = findViewById(R.id.input_phone);
         passwordText = findViewById(R.id.input_password);
         capacityText = findViewById(R.id.input_capacity);
-        accountNumberText = findViewById(R.id.input_account_number);
-        panText = findViewById(R.id.input_pan);
+        upiIdText = findViewById(R.id.input_upi_id);
         addressText = findViewById(R.id.input_address);
-        ifscText = findViewById(R.id.input_ifsc);
         setLocationButton = findViewById(R.id.set_final_location);
         uploadPhotoButton = findViewById(R.id.btn_upload_photo);
         signUpButton = findViewById(R.id.btn_next);
@@ -118,12 +115,10 @@ public class SignUpInventoryActivity
                 nameText.setEnabled(false);
                 addressText.setEnabled(false);
                 capacityText.setEnabled(false);
-                accountNumberText.setEnabled(false);
-                panText.setEnabled(false);
-                ifscText.setEnabled(false);
+                upiIdText.setEnabled(false);
                 passwordText.setEnabled(false);
-               // setLocationButton.setVisibility(View.GONE);
-               // uploadPhotoButton.setVisibility(View.GONE);
+                // setLocationButton.setVisibility(View.GONE);
+                // uploadPhotoButton.setVisibility(View.GONE);
                 signUpButton.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
                 uploadImage();
@@ -206,9 +201,7 @@ public class SignUpInventoryActivity
         nameText.setText(owner.getName());
         passwordText.setText(owner.getPassword());
         capacityText.setText(String.valueOf(owner.getCapacity()));
-        accountNumberText.setText(owner.getAccountNumber());
-        panText.setText(owner.getPanNumber());
-        ifscText.setText(owner.getIfscCode());
+        upiIdText.setText(owner.getUpiId());
         addressText.setText(owner.getAddress());
 
         this.markedLocation = extras.getParcelable("inventory-location");
@@ -249,16 +242,12 @@ public class SignUpInventoryActivity
         String password = passwordText.getText().toString();
         int capacity = Integer
                 .parseInt(capacityText.getText().toString());
-        String pan = panText.getText().toString();
-        String ifsc = ifscText.getText().toString();
-        String accountNumber = accountNumberText.getText().toString();
+        String upiId = upiIdText.getText().toString();
         String address = addressText.getText().toString();
 
-        owner = new InventoryOwner(name, email,
-                password, ifsc, phoneNumber,
-                pan, null,
-                accountNumber, markedLocation,
-                null, null,
+        String hash = SecurePassword.getHashedPassword(password, phoneNumber);
+        owner = new InventoryOwner(name, email, hash, phoneNumber, null,
+                upiId, markedLocation, null, null,
                 "true", capacity, address, 5);
 
 
@@ -278,9 +267,7 @@ public class SignUpInventoryActivity
         nameText.setText(owner.getName());
         passwordText.setText(owner.getPassword());
         capacityText.setText(owner.getCapacity());
-        accountNumberText.setText(owner.getAccountNumber());
-        panText.setText(owner.getPanNumber());
-        ifscText.setText(owner.getIfscCode());
+        upiIdText.setText(owner.getUpiId());
         addressText.setText(owner.getAddress());
         Bundle extras = getIntent().getExtras();
         assert extras != null;

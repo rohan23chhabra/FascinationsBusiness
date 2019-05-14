@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.fascinationsbusiness.core.InventoryOwner;
@@ -49,6 +50,7 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
     List<User> userList = new ArrayList<>();
     List<String> userPhoneList = new ArrayList<>();
     List<Integer> userBagsList = new ArrayList<>();
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,9 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
 
         verifyStatusView = findViewById(R.id.verification_status);
         listView = findViewById(R.id.listview);
+        progressBar = findViewById(R.id.inventory_show_user_list);
 
+        progressBar.setVisibility(View.VISIBLE);
         DB.getDatabaseReference().child("pending-inventory-requests")
                 .addValueEventListener(
                         new ValueEventListener() {
@@ -103,7 +107,8 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
                                                             .getValue()),
                                                     InventoryRequest.class);
 
-                                    final String user = gson
+                                    final String user = request.getUserPhoneNumber();
+                                    final String requestId = gson
                                             .fromJson(gson.toJson(
                                                     dataSnapshotChild.getKey()),
                                                     String.class);
@@ -155,6 +160,7 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
                                                         new Intent(
                                                                 InventoryOwnerHomePageActivity.this,
                                                                 ListViewItemDeleteService.class);
+                                                intent.putExtra("request-id", requestId);
                                                 intent.putExtra(
                                                         "user-phone-number",
                                                         user);
@@ -221,6 +227,7 @@ public class InventoryOwnerHomePageActivity extends AppCompatActivity
                                                         InventoryOwnerHomePageActivity.this,
                                                         userList);
                                         listView.setAdapter(customAdapter);
+                                        progressBar.setVisibility(View.GONE);
                                     }
                                 }, 1000);
 

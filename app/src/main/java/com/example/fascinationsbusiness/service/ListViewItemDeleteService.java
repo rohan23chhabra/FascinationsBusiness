@@ -29,13 +29,14 @@ public class ListViewItemDeleteService extends Service {
         long currentTimeMillis = intent.getLongExtra("current-time-millis", 0);
         String ownerPhoneNumber = intent.getStringExtra("owner-phone-number");
         int prevCapacity = intent.getIntExtra("prev-capacity", 0);
+        int requestId = intent.getIntExtra("request-id", 0);
         Log.i("mc-add", String.valueOf(capacityToBeAdded));
         Log.i("mc-prev", String.valueOf(prevCapacity));
         Date date = new Date(currentTimeMillis + 24 * 60 * 60 * 1000);
         Timer timer = new Timer();
         timer.schedule(
                 new DeleteInventoryRequestTask(userPhoneNumber, capacityToBeAdded,
-                        ownerPhoneNumber, prevCapacity),
+                        ownerPhoneNumber, prevCapacity, requestId),
                 date);
         return super.onStartCommand(intent, flags, startId);
     }

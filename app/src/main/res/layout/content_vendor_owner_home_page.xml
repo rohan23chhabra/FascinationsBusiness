@@ -5,9 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".VendorOwnerHomePageActivity"
     tools:showIn="@layout/app_bar_vendor_owner_home_page">
+
+    <ProgressBar
+        android:id="@+id/vendor_on_users_list_load"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/user_list"

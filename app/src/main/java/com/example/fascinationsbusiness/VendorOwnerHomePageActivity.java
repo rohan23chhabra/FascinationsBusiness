@@ -16,11 +16,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.fascinationsbusiness.core.User;
+import com.example.fascinationsbusiness.core.VendorOwner;
 import com.example.fascinationsbusiness.core.VendorTransaction;
 import com.example.fascinationsbusiness.db.DB;
+import com.example.fascinationsbusiness.net.QRCodeFetchCallback;
 import com.example.fascinationsbusiness.net.UserFetchCallback;
 import com.example.fascinationsbusiness.net.UserPhoneFetchCallback;
 import com.example.fascinationsbusiness.serialize.MyGson;
@@ -40,6 +43,7 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
     List<String> userPhoneList = new ArrayList<>();
     TextView verifyStatusView;
     ListView listView;
+    ProgressBar progressBar;
     final Gson gson = MyGson.getGson();
 
     @Override
@@ -73,7 +77,9 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
 
         //verifyStatusView = findViewById(R.id.vendor_verification_status);
         listView = findViewById(R.id.user_list);
+        progressBar = findViewById(R.id.vendor_on_users_list_load);
 
+        progressBar.setVisibility(View.VISIBLE);
         populateUserPhoneNumberList(new UserPhoneFetchCallback() {
             @Override public void onUsersPhoneFetched(List<String> userPhoneList) {
                 populateUserList(userPhoneList.size(), new UserFetchCallback() {
@@ -82,10 +88,12 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
                                 new VendorListAdapter(VendorOwnerHomePageActivity.this,
                                         userList);
                         listView.setAdapter(vendorListAdapter);
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
             }
         });
+
     }
 
     private void populateUserPhoneNumberList(final UserPhoneFetchCallback userPhoneFetchCallback) {
@@ -197,10 +205,42 @@ public class VendorOwnerHomePageActivity extends AppCompatActivity
             Intent intent = new Intent(VendorOwnerHomePageActivity.this,
                     LoginActivity.class);
             startActivity(intent);
+        } else if (id == R.id.show_qr_code) {
+            String ownerPhoneNumber = new SessionDetails(this).getSharedPreferences().getString(
+                    "phone", "");
+            fetchQRCode(ownerPhoneNumber, new QRCodeFetchCallback() {
+                @Override public void onQRCodeFetched(String qrCodeUrl) {
+                    Intent intent =
+                            new Intent(VendorOwnerHomePageActivity.this, ShowQRCodeActivity.class);
+                    intent.putExtra("qr-code-url", qrCodeUrl);
+                    VendorOwnerHomePageActivity.this.startActivity(intent);
+                }
+            });
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void fetchQRCode(String ownerPhoneNumber, final QRCodeFetchCallback callback) {
+        DB.getDatabaseReference().child("vendor-owner").child(ownerPhoneNumber)
+                .addValueEventListener(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Gson gson = MyGson.getGson();
+                                VendorOwner vendorOwner =
+                                        gson.fromJson(gson.toJson(dataSnapshot.getValue()),
+                                                VendorOwner.class);
+                                String qrCodeUrl = vendorOwner.getQrCodeURL();
+                                callback.onQRCodeFetched(qrCodeUrl);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
+    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

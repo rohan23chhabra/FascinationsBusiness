@@ -45,8 +45,6 @@ public class NotificationService extends Service {
                             InventoryRequest request =
                                     gson.fromJson(gson.toJson(dataSnapshotChild.getValue()),
                                             InventoryRequest.class);
-                            String user = gson.fromJson(gson.toJson(dataSnapshotChild.getKey()),
-                                    String.class);
                             String loggedInPhoneNumber =
                                     new SessionDetails(getApplicationContext())
                                             .getSharedPreferences().getString("phone",
@@ -84,7 +82,7 @@ public class NotificationService extends Service {
                 .setSmallIcon(R.drawable.logo)
                 .setContentTitle("Inventory Request")
                 .setAutoCancel(true)
-                .setContentText("A User wants to connect with you.");
+                .setContentText("A User wants has interacted with you.");
         Intent intent = new Intent(getApplicationContext(), InventoryOwnerHomePageActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);

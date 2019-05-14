@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/white"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".InventoryOwnerHomePageActivity"
     tools:showIn="@layout/app_bar_inventory_owner_home_page">
@@ -15,10 +15,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
         android:text="LOLL"
         android:textSize="30sp"
         android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/inventory_show_user_list"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/listview"

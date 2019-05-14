@@ -17,7 +17,9 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.fascinationsbusiness.core.InventoryOwner;
 import com.example.fascinationsbusiness.core.Owner;
+import com.example.fascinationsbusiness.core.VendorOwner;
 import com.example.fascinationsbusiness.security.SecurePassword;
 import com.example.fascinationsbusiness.serialize.MyGson;
 import com.example.fascinationsbusiness.service.NotificationService;
@@ -72,13 +74,16 @@ public class LoginActivity
                         VendorOwnerHomePageActivity.class);
                 LoginActivity.this.startActivity(intent);
                 finish();
-            }
-            if (selectedOwner.equals("inventory-owner")) {
+            } else if (selectedOwner.equals("inventory-owner")) {
                 Intent intent = new Intent(
                         LoginActivity.this,
                         InventoryOwnerHomePageActivity.class);
                 intent.putExtra("phone", sharedPreferences.getString("phone", "#"));
                 LoginActivity.this.startActivity(intent);
+                finish();
+            } else if (selectedOwner.equalsIgnoreCase("Admin")) {
+                Intent intent = new Intent(this, AdminActivity.class);
+                startActivity(intent);
                 finish();
             }
 
@@ -124,6 +129,7 @@ public class LoginActivity
                         AdminActivity.class);
                 LoginActivity.this
                         .startActivity(intent);
+                finish();
                 return;
             }
             FirebaseDatabase.getInstance()
@@ -136,10 +142,18 @@ public class LoginActivity
                                 public void onDataChange(
                                         @NonNull DataSnapshot dataSnapshot) {
                                     Gson gson = MyGson.getGson();
-                                    Owner owner = gson.fromJson(gson
-                                                    .toJson(dataSnapshot
-                                                            .getValue()),
-                                            Owner.class);
+                                    Owner owner;
+                                    if (selectedOwner.equalsIgnoreCase("inventory-owner")) {
+                                        owner = gson.fromJson(gson
+                                                        .toJson(dataSnapshot
+                                                                .getValue()),
+                                                InventoryOwner.class);
+                                    } else {
+                                        owner = gson.fromJson(gson
+                                                        .toJson(dataSnapshot
+                                                                .getValue()),
+                                                VendorOwner.class);
+                                    }
                                     assert owner != null;
                                     String hash1 = owner.getPassword();
                                     String hash2 =
@@ -163,12 +177,14 @@ public class LoginActivity
                                             intent.putExtra("phone", phonenumber);
                                             LoginActivity.this
                                                     .startActivity(intent);
+                                            finish();
                                         } else {
                                             Intent intent = new Intent(
                                                     LoginActivity.this,
                                                     VendorOwnerHomePageActivity.class);
                                             LoginActivity.this
                                                     .startActivity(intent);
+                                            finish();
                                         }
 
                                     }

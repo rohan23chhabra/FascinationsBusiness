@@ -21,7 +21,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViewOrderActivity"></activity>
+        <activity android:name=".ShowQRCodeActivity"></activity>
+        <activity android:name=".ViewOrderActivity" />
         <activity android:name=".SetFoodCatalogue" />
         <activity
             android:name=".VendorOwnerHomePageActivity"
